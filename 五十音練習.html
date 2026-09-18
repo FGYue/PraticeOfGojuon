@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>五十音練習</title>
+
+<style>
+
+/* =========================
+   基本
+========================= */
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:#f4f5f7;
+  color:#222;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans TC",
+    "Microsoft JhengHei",
+    sans-serif;
+}
+
+.container{
+  width:min(720px,94vw);
+  margin:18px auto;
+}
+
+
+/* =========================
+   標題
+========================= */
+
+header{
+  text-align:center;
+  margin-bottom:12px;
+}
+
+header h1{
+  margin:0;
+  font-size:22px;
+  font-weight:700;
+}
+
+header p{
+  margin:3px 0 0;
+  color:#888;
+  font-size:12px;
+}
+
+
+/* =========================
+   設定
+========================= */
+
+.settings{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.25fr;
+  gap:7px;
+  margin-bottom:8px;
+}
+
+.box{
+  background:#fff;
+  border:1px solid #e1e3e6;
+  border-radius:9px;
+  padding:7px 9px;
+}
+
+.box label{
+  display:block;
+  margin-bottom:2px;
+  color:#888;
+  font-size:10px;
+}
+
+select{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#222;
+  font-size:13px;
+  cursor:pointer;
+}
+
+
+/* =========================
+   統計
+========================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-bottom:8px;
+}
+
+.stat{
+  background:#fff;
+  border:1px solid #e1e3e6;
+  border-radius:9px;
+  padding:6px;
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+  font-size:17px;
+  line-height:20px;
+}
+
+.stat span{
+  color:#888;
+  font-size:10px;
+}
+
+
+/* =========================
+   題目卡片
+========================= */
+
+.question-card{
+  background:#fff;
+  border:1px solid #e1e3e6;
+  border-radius:11px;
+  padding:12px;
+  text-align:center;
+}
+
+.progress{
+  height:16px;
+  color:#999;
+  font-size:11px;
+}
+
+.question-label{
+  height:17px;
+  color:#888;
+  font-size:11px;
+}
+
+.question{
+  height:48px;
+  margin:2px 0 5px;
+
+  line-height:48px;
+
+  font-size:36px;
+  font-weight:600;
+}
+
+
+/* =========================
+   固定操作區
+========================= */
+
+/*
+  所有模式都使用相同高度。
+  切換模式不會造成頁面上下跳動。
+*/
+
+.action-area{
+  height:355px;
+  position:relative;
+}
+
+
+/* =========================
+   手寫面板
+========================= */
+
+.write-panel{
+  height:355px;
+}
+
+.canvas-wrap{
+  width:min(270px,72vw);
+  height:270px;
+
+  margin:0 auto 7px;
+}
+
+canvas{
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  background:#fff;
+
+  border:1px solid #d7dadd;
+  border-radius:9px;
+
+  touch-action:none;
+  cursor:crosshair;
+}
+
+
+/* =========================
+   羅馬拼音輸入面板
+========================= */
+
+.romaji-panel{
+  height:355px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.romaji-area{
+  width:min(340px,85vw);
+
+  /*
+    垂直位置固定，
+    避免切換模式後畫面變動。
+  */
+
+  margin-top:105px;
+}
+
+.romaji-input{
+  width:100%;
+  height:44px;
+
+  padding:0 12px;
+
+  border:1px solid #d4d7db;
+  border-radius:8px;
+
+  outline:none;
+
+  background:#fff;
+
+  text-align:center;
+
+  font-size:18px;
+}
+
+.romaji-input:focus{
+  border-color:#777;
+}
+
+.romaji-input::placeholder{
+  color:#aaa;
+  font-size:13px;
+}
+
+
+/* =========================
+   按鈕
+========================= */
+
+.button-area{
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:7px;
+}
+
+button{
+  border:0;
+  border-radius:7px;
+
+  padding:7px 13px;
+
+  font-size:12px;
+
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.primary{
+  background:#222;
+  color:#fff;
+}
+
+.secondary{
+  background:#eceef0;
+  color:#333;
+}
+
+.success{
+  background:#e4f5e8;
+  color:#23753a;
+}
+
+.danger{
+  background:#fde8e8;
+  color:#a62c2c;
+}
+
+
+/* =========================
+   答案區
+========================= */
+
+.answer-area{
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.answer-box{
+  visibility:hidden;
+
+  width:min(360px,90vw);
+  height:34px;
+
+  padding:6px 10px;
+
+  border-radius:7px;
+
+  background:#f4f5f6;
+
+  font-size:12px;
+
+  white-space:nowrap;
+}
+
+.answer-box.visible{
+  visibility:visible;
+}
+
+.answer-correct{
+  color:#23753a;
+  font-weight:600;
+}
+
+.answer-wrong{
+  color:#a62c2c;
+  font-weight:600;
+}
+
+.answer-kana{
+  margin-left:7px;
+}
+
+.answer-romaji{
+  margin-left:4px;
+  font-size:16px;
+  font-weight:600;
+}
+
+
+/* =========================
+   自我判斷區
+========================= */
+
+.judge-area{
+  height:48px;
+
+  display:flex;
+  flex-direction:column;
+
+  align-items:center;
+  justify-content:center;
+
+  /*
+    重點：
+    永遠佔空間，但沒有答案時隱藏內容。
+  */
+
+  visibility:hidden;
+}
+
+.judge-area.visible{
+  visibility:visible;
+}
+
+.judge-title{
+  height:15px;
+
+  margin-bottom:3px;
+
+  color:#888;
+  font-size:10px;
+}
+
+
+/* =========================
+   開始
+========================= */
+
+.start-area{
+  height:48px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+
+/* =========================
+   完成
+========================= */
+
+.result{
+  display:none;
+
+  margin-top:8px;
+
+  padding:12px;
+
+  background:#f5f6f7;
+
+  border-radius:9px;
+
+  text-align:center;
+}
+
+.result h2{
+  margin:0 0 5px;
+
+  font-size:19px;
+}
+
+.result p{
+  margin:2px;
+
+  font-size:12px;
+}
+
+
+/* =========================
+   小提示
+========================= */
+
+.hint{
+  margin-top:6px;
+
+  color:#aaa;
+
+  font-size:10px;
+}
+
+
+/* =========================
+   手機
+========================= */
+
+@media(max-width:600px){
+
+  .container{
+    margin:10px auto;
+  }
+
+  header h1{
+    font-size:20px;
+  }
+
+  .settings{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .settings .box:last-child{
+    grid-column:1 / -1;
+  }
+
+  .question-card{
+    padding:10px;
+  }
+
+  .question{
+    font-size:32px;
+  }
+
+  .action-area{
+    height:335px;
+  }
+
+  .write-panel,
+  .romaji-panel{
+    height:335px;
+  }
+
+  .canvas-wrap{
+    width:min(250px,75vw);
+    height:250px;
+  }
+
+  .romaji-area{
+    margin-top:95px;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- =========================
+     標題
+========================= -->
+
+<header>
+
+  <h1>五十音練習</h1>
+
+  <p>
+    手寫練習・羅馬拼音練習
+  </p>
+
+</header>
+
+
+<!-- =========================
+     設定
+========================= -->
+
+<div class="settings">
+
+
+  <div class="box">
+
+    <label>假名</label>
+
+    <select id="scriptSelect">
+
+      <option value="hiragana">
+        平假名
+      </option>
+
+      <option value="katakana">
+        片假名
+      </option>
+
+      <option value="mixed">
+        混合
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <div class="box">
+
+    <label>模式</label>
+
+    <select id="modeSelect">
+
+      <option value="romajiToWrite">
+        羅馬拼音 → 手寫
+      </option>
+
+      <option value="kanaToWrite">
+        看假名 → 手寫
+      </option>
+
+      <option value="romajiHintToWrite">
+        羅馬拼音＋提示 → 手寫
+      </option>
+
+      <option value="kanaToRomaji">
+        看假名 → 輸入羅馬拼音
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <div class="box">
+
+    <label>題數</label>
+
+    <select id="countSelect">
+
+      <option value="46">
+        46 題
+      </option>
+
+      <option value="92">
+        92 題
+      </option>
+
+    </select>
+
+  </div>
+
+
+</div>
+
+
+<!-- =========================
+     統計
+========================= -->
+
+<div class="stats">
+
+
+  <div class="stat">
+
+    <strong id="correctCount">
+      0
+    </strong>
+
+    <span>
+      答對
+    </span>
+
+  </div>
+
+
+  <div class="stat">
+
+    <strong id="wrongCount">
+      0
+    </strong>
+
+    <span>
+      答錯
+    </span>
+
+  </div>
+
+
+  <div class="stat">
+
+    <strong id="completedCount">
+      0
+    </strong>
+
+    <span>
+      已完成
+    </span>
+
+  </div>
+
+
+</div>
+
+
+<!-- =========================
+     題目
+========================= -->
+
+<div class="question-card">
+
+
+  <div
+    class="progress"
+    id="progress"
+  >
+    準備開始
+  </div>
+
+
+  <div
+    class="question-label"
+    id="questionLabel"
+  >
+    按開始後出題
+  </div>
+
+
+  <div
+    class="question"
+    id="question"
+  >
+    ー
+  </div>
+
+
+  <!-- =========================
+       固定操作區
+  ========================= -->
+
+  <div class="action-area">
+
+
+    <!-- =========================
+         手寫
+    ========================= -->
+
+    <div
+      class="write-panel"
+      id="writePanel"
+    >
+
+      <div class="canvas-wrap">
+
+        <canvas
+          id="canvas"
+          width="500"
+          height="500"
+        ></canvas>
+
+      </div>
+
+
+      <div class="button-area">
+
+        <button
+          class="secondary"
+          id="clearButton"
+        >
+          清除
+        </button>
+
+
+        <button
+          class="primary"
+          id="readyButton"
+        >
+          我寫好了
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================
+         羅馬拼音輸入
+    ========================= -->
+
+    <div
+      class="romaji-panel"
+      id="romajiPanel"
+    >
+
+      <div class="romaji-area">
+
+        <input
+          id="romajiInput"
+          class="romaji-input"
+
+          type="text"
+
+          inputmode="latin"
+
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="none"
+          spellcheck="false"
+
+          placeholder="輸入羅馬拼音"
+        >
+
+      </div>
+
+
+      <div class="button-area">
+
+        <button
+          class="primary"
+          id="romajiCheckButton"
+        >
+          確認
+        </button>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =========================
+       固定答案區
+  ========================= -->
+
+  <div class="answer-area">
+
+    <div
+      class="answer-box"
+      id="answerBox"
+    ></div>
+
+  </div>
+
+
+  <!-- =========================
+       手寫自我判斷
+  ========================= -->
+
+  <div
+    class="judge-area"
+    id="judgeArea"
+  >
+
+    <div class="judge-title">
+      請自己判斷
+    </div>
+
+
+    <div class="button-area">
+
+      <button
+        class="success"
+        id="correctButton"
+      >
+        ✓ 答對
+      </button>
+
+
+      <button
+        class="danger"
+        id="wrongButton"
+      >
+        ✕ 答錯
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       開始
+  ========================= -->
+
+  <div
+    class="start-area"
+    id="startArea"
+  >
+
+    <button
+      class="primary"
+      id="startButton"
+    >
+      開始練習
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       完成
+  ========================= -->
+
+  <div
+    class="result"
+    id="result"
+  >
+
+    <h2>
+      完成！
+    </h2>
+
+
+    <p>
+      答對：
+      <strong id="resultCorrect">
+        0
+      </strong>
+    </p>
+
+
+    <p>
+      答錯：
+      <strong id="resultWrong">
+        0
+      </strong>
+    </p>
+
+
+    <p>
+      正確率：
+      <strong id="resultRate">
+        0%
+      </strong>
+    </p>
+
+
+    <div
+      class="button-area"
+      style="margin-top:5px"
+    >
+
+      <button
+        class="primary"
+        id="restartButton"
+      >
+        再練一次
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="hint">
+    羅馬拼音由網頁自動判斷；手寫題由使用者自行判斷。
+  </div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   五十音資料
+===================================================== */
+
+const GOJUON = [
+
+  ["a","あ","ア"],
+  ["i","い","イ"],
+  ["u","う","ウ"],
+  ["e","え","エ"],
+  ["o","お","オ"],
+
+  ["ka","か","カ"],
+  ["ki","き","キ"],
+  ["ku","く","ク"],
+  ["ke","け","ケ"],
+  ["ko","こ","コ"],
+
+  ["sa","さ","サ"],
+  ["shi","し","シ"],
+  ["su","す","ス"],
+  ["se","せ","セ"],
+  ["so","そ","ソ"],
+
+  ["ta","た","タ"],
+  ["chi","ち","チ"],
+  ["tsu","つ","ツ"],
+  ["te","て","テ"],
+  ["to","と","ト"],
+
+  ["na","な","ナ"],
+  ["ni","に","ニ"],
+  ["nu","ぬ","ヌ"],
+  ["ne","ね","ネ"],
+  ["no","の","ノ"],
+
+  ["ha","は","ハ"],
+  ["hi","ひ","ヒ"],
+  ["fu","ふ","フ"],
+  ["he","へ","ヘ"],
+  ["ho","ほ","ホ"],
+
+  ["ma","ま","マ"],
+  ["mi","み","ミ"],
+  ["mu","む","ム"],
+  ["me","め","メ"],
+  ["mo","も","モ"],
+
+  ["ya","や","ヤ"],
+  ["yu","ゆ","ユ"],
+  ["yo","よ","ヨ"],
+
+  ["ra","ら","ラ"],
+  ["ri","り","リ"],
+  ["ru","る","ル"],
+  ["re","れ","レ"],
+  ["ro","ろ","ロ"],
+
+  ["wa","わ","ワ"],
+  ["wo","を","ヲ"],
+
+  ["n","ん","ン"]
+
+];
+
+
+/* =====================================================
+   DOM
+===================================================== */
+
+const scriptSelect =
+  document.getElementById("scriptSelect");
+
+const modeSelect =
+  document.getElementById("modeSelect");
+
+const countSelect =
+  document.getElementById("countSelect");
+
+const question =
+  document.getElementById("question");
+
+const questionLabel =
+  document.getElementById("questionLabel");
+
+const progress =
+  document.getElementById("progress");
+
+const writePanel =
+  document.getElementById("writePanel");
+
+const romajiPanel =
+  document.getElementById("romajiPanel");
+
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext("2d");
+
+const romajiInput =
+  document.getElementById("romajiInput");
+
+const answerBox =
+  document.getElementById("answerBox");
+
+const judgeArea =
+  document.getElementById("judgeArea");
+
+const startArea =
+  document.getElementById("startArea");
+
+const result =
+  document.getElementById("result");
+
+
+/* =====================================================
+   狀態
+===================================================== */
+
+let questions = [];
+
+let currentIndex = 0;
+
+let correctCount = 0;
+
+let wrongCount = 0;
+
+let completedCount = 0;
+
+let currentQuestion = null;
+
+let drawing = false;
+
+
+/* =====================================================
+   洗牌
+===================================================== */
+
+function shuffle(array){
+
+  return [...array].sort(
+    () => Math.random() - 0.5
+  );
+
+}
+
+
+/* =====================================================
+   建立題目
+===================================================== */
+
+function createQuestions(){
+
+  const script =
+    scriptSelect.value;
+
+  const count =
+    Number(countSelect.value);
+
+  let list = [];
+
+
+  /*
+    混合模式：
+    46 平假名 + 46 片假名
+  */
+
+  if(
+    script === "mixed" ||
+    count === 92
+  ){
+
+    GOJUON.forEach(item => {
+
+      list.push({
+
+        romaji:item[0],
+
+        kana:item[1],
+
+        type:"hiragana"
+
+      });
+
+
+      list.push({
+
+        romaji:item[0],
+
+        kana:item[2],
+
+        type:"katakana"
+
+      });
+
+    });
+
+  }
+
+  /*
+    單一假名
+  */
+
+  else{
+
+    GOJUON.forEach(item => {
+
+      list.push({
+
+        romaji:item[0],
+
+        kana:
+          script === "hiragana"
+            ? item[1]
+            : item[2],
+
+        type:script
+
+      });
+
+    });
+
+  }
+
+
+  return shuffle(list).slice(
+    0,
+    Math.min(
+      count,
+      list.length
+    )
+  );
+
+}
+
+
+/* =====================================================
+   模式 UI
+===================================================== */
+
+function updateModeUI(){
+
+  const mode =
+    modeSelect.value;
+
+
+  if(
+    mode === "kanaToRomaji"
+  ){
+
+    writePanel.style.display =
+      "none";
+
+    romajiPanel.style.display =
+      "block";
+
+  }
+
+  else{
+
+    writePanel.style.display =
+      "block";
+
+    romajiPanel.style.display =
+      "none";
+
+  }
+
+}
+
+
+/* =====================================================
+   顯示目前題目
+===================================================== */
+
+function updateQuestion(){
+
+  if(
+    currentIndex >=
+    questions.length
+  ){
+
+    finishGame();
+
+    return;
+
+  }
+
+
+  currentQuestion =
+    questions[currentIndex];
+
+
+  const mode =
+    modeSelect.value;
+
+
+  progress.textContent =
+    `${currentIndex + 1} / ${questions.length}`;
+
+
+  /*
+    清除答案
+  */
+
+  answerBox.classList.remove(
+    "visible"
+  );
+
+  answerBox.innerHTML =
+    "";
+
+
+  /*
+    隱藏手寫判斷
+  */
+
+  judgeArea.classList.remove(
+    "visible"
+  );
+
+
+  /*
+    清除輸入
+  */
+
+  romajiInput.value = "";
+
+  romajiInput.disabled =
+    false;
+
+
+  /*
+    清除 Canvas
+  */
+
+  clearCanvas();
+
+
+  /* =========================
+     模式 1
+  ========================= */
+
+  if(
+    mode === "romajiToWrite"
+  ){
+
+    questionLabel.textContent =
+      "羅馬拼音 → 手寫";
+
+    question.textContent =
+      currentQuestion.romaji;
+
+  }
+
+
+  /* =========================
+     模式 2
+  ========================= */
+
+  else if(
+    mode === "kanaToWrite"
+  ){
+
+    questionLabel.textContent =
+      "看假名 → 手寫";
+
+    question.textContent =
+      currentQuestion.kana;
+
+  }
+
+
+  /* =========================
+     模式 3
+  ========================= */
+
+  else if(
+    mode === "romajiHintToWrite"
+  ){
+
+    questionLabel.textContent =
+      "羅馬拼音＋提示 → 手寫";
+
+    question.textContent =
+      currentQuestion.romaji +
+      " → " +
+      currentQuestion.kana;
+
+  }
+
+
+  /* =========================
+     模式 4
+  ========================= */
+
+  else if(
+    mode === "kanaToRomaji"
+  ){
+
+    questionLabel.textContent =
+      "看假名 → 輸入羅馬拼音";
+
+    question.textContent =
+      currentQuestion.kana;
+
+
+    /*
+      自動聚焦
+    */
+
+    setTimeout(
+      () => {
+
+        if(
+          romajiPanel.style.display !==
+          "none"
+        ){
+
+          romajiInput.focus();
+
+        }
+
+      },
+      30
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   顯示手寫答案
+===================================================== */
+
+function showWritingAnswer(){
+
+  answerBox.innerHTML =
+
+    `
+      <span>
+        正確答案：
+      </span>
+
+      <span class="answer-kana">
+        ${currentQuestion.kana}
+      </span>
+
+      <span>
+        /
+      </span>
+
+      <span class="answer-romaji">
+        ${currentQuestion.romaji}
+      </span>
+    `;
+
+
+  answerBox.classList.add(
+    "visible"
+  );
+
+
+  judgeArea.classList.add(
+    "visible"
+  );
+
+}
+
+
+/* =====================================================
+   手寫「我寫好了」
+===================================================== */
+
+document
+  .getElementById("readyButton")
+  .addEventListener(
+    "click",
+    showWritingAnswer
+  );
+
+
+/* =====================================================
+   羅馬字正規化
+===================================================== */
+
+function normalizeRomaji(value){
+
+  let s =
+    value
+      .trim()
+      .toLowerCase();
+
+
+  /*
+    移除空白
+  */
+
+  s =
+    s.replace(
+      /\s+/g,
+      ""
+    );
+
+
+  /*
+    移除連字號
+  */
+
+  s =
+    s.replace(
+      /-/g,
+      ""
+    );
+
+
+  return s;
+
+}
+
+
+/* =====================================================
+   羅馬字可接受答案
+===================================================== */
+
+function getAcceptedRomaji(romaji){
+
+  const map = {
+
+    a:["a"],
+    i:["i"],
+    u:["u"],
+    e:["e"],
+    o:["o"],
+
+
+    ka:["ka"],
+    ki:["ki"],
+    ku:["ku"],
+    ke:["ke"],
+    ko:["ko"],
+
+
+    sa:["sa"],
+
+    shi:[
+      "shi",
+      "si"
+    ],
+
+    su:["su"],
+    se:["se"],
+    so:["so"],
+
+
+    ta:["ta"],
+
+    chi:[
+      "chi",
+      "ti"
+    ],
+
+    tsu:[
+      "tsu",
+      "tu"
+    ],
+
+    te:["te"],
+    to:["to"],
+
+
+    na:["na"],
+    ni:["ni"],
+    nu:["nu"],
+    ne:["ne"],
+    no:["no"],
+
+
+    ha:["ha"],
+    hi:["hi"],
+
+    fu:[
+      "fu",
+      "hu"
+    ],
+
+    he:["he"],
+    ho:["ho"],
+
+
+    ma:["ma"],
+    mi:["mi"],
+    mu:["mu"],
+    me:["me"],
+    mo:["mo"],
+
+
+    ya:["ya"],
+    yu:["yu"],
+    yo:["yo"],
+
+
+    ra:["ra"],
+    ri:["ri"],
+    ru:["ru"],
+    re:["re"],
+    ro:["ro"],
+
+
+    wa:["wa"],
+
+    wo:[
+      "wo",
+      "o"
+    ],
+
+
+    n:[
+      "n",
+      "nn"
+    ]
+
+  };
+
+
+  return (
+    map[romaji] ||
+    [romaji]
+  );
+
+}
+
+
+/* =====================================================
+   顯示羅馬字結果
+===================================================== */
+
+function showRomajiResult(
+  isCorrect
+){
+
+  /*
+    暫時鎖定輸入框
+  */
+
+  romajiInput.disabled =
+    true;
+
+
+  if(isCorrect){
+
+    /*
+      答對
+    */
+
+    answerBox.innerHTML =
+
+      `
+        <span class="answer-correct">
+          ✓ 答對
+        </span>
+
+        <span class="answer-kana">
+          ${currentQuestion.kana}
+        </span>
+
+        <span>
+          /
+        </span>
+
+        <span class="answer-romaji">
+          ${currentQuestion.romaji}
+        </span>
+      `;
+
+  }
+
+  else{
+
+    /*
+      答錯
+    */
+
+    answerBox.innerHTML =
+
+      `
+        <span class="answer-wrong">
+          ✕ 答錯
+        </span>
+
+        <span class="answer-kana">
+          正確：
+          ${currentQuestion.kana}
+        </span>
+
+        <span>
+          /
+        </span>
+
+        <span class="answer-romaji">
+          ${currentQuestion.romaji}
+        </span>
+      `;
+
+  }
+
+
+  answerBox.classList.add(
+    "visible"
+  );
+
+
+  /*
+    自動下一題
+  */
+
+  setTimeout(
+    () => {
+
+      if(isCorrect){
+
+        correctCount++;
+
+      }
+      else{
+
+        wrongCount++;
+
+      }
+
+
+      completedCount++;
+
+
+      updateStats();
+
+
+      romajiInput.disabled =
+        false;
+
+
+      nextQuestion();
+
+    },
+    800
+  );
+
+}
+
+
+/* =====================================================
+   自動判斷羅馬字
+===================================================== */
+
+function checkRomaji(){
+
+  const input =
+    normalizeRomaji(
+      romajiInput.value
+    );
+
+
+  /*
+    不允許空白答案
+  */
+
+  if(!input){
+
+    romajiInput.focus();
+
+    return;
+
+  }
+
+
+  const target =
+    normalizeRomaji(
+      currentQuestion.romaji
+    );
+
+
+  const accepted =
+    getAcceptedRomaji(
+      target
+    );
+
+
+  const isCorrect =
+    accepted.includes(
+      input
+    );
+
+
+  showRomajiResult(
+    isCorrect
+  );
+
+}
+
+
+/* =====================================================
+   羅馬字確認按鈕
+===================================================== */
+
+document
+  .getElementById(
+    "romajiCheckButton"
+  )
+  .addEventListener(
+    "click",
+    checkRomaji
+  );
+
+
+/* =====================================================
+   Enter 確認
+===================================================== */
+
+romajiInput.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "Enter"
+    ){
+
+      event.preventDefault();
+
+      checkRomaji();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   手寫答對
+===================================================== */
+
+document
+  .getElementById(
+    "correctButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      correctCount++;
+
+      completedCount++;
+
+      updateStats();
+
+      nextQuestion();
+
+    }
+  );
+
+
+/* =====================================================
+   手寫答錯
+===================================================== */
+
+document
+  .getElementById(
+    "wrongButton"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      wrongCount++;
+
+      completedCount++;
+
+      updateStats();
+
+      nextQuestion();
+
+    }
+  );
+
+
+/* =====================================================
+   下一題
+===================================================== */
+
+function nextQuestion(){
+
+  currentIndex++;
+
+  updateQuestion();
+
+}
+
+
+/* =====================================================
+   更新統計
+===================================================== */
+
+function updateStats(){
+
+  document
+    .getElementById(
+      "correctCount"
+    )
+    .textContent =
+      correctCount;
+
+
+  document
+    .getElementById(
+      "wrongCount"
+    )
+    .textContent =
+      wrongCount;
+
+
+  document
+    .getElementById(
+      "completedCount"
+    )
+    .textContent =
+      completedCount;
+
+}
+
+
+/* =====================================================
+   完成
+===================================================== */
+
+function finishGame(){
+
+  /*
+    清掉題目操作
+  */
+
+  writePanel.style.display =
+    "none";
+
+  romajiPanel.style.display =
+    "none";
+
+
+  answerBox.classList.remove(
+    "visible"
+  );
+
+
+  judgeArea.classList.remove(
+    "visible"
+  );
+
+
+  /*
+    顯示完成
+  */
+
+  question.textContent =
+    "完成";
+
+  questionLabel.textContent =
+    "本輪練習結束";
+
+  progress.textContent =
+    `${questions.length} / ${questions.length}`;
+
+
+  /*
+    計算正確率
+  */
+
+  const rate =
+    questions.length > 0
+
+      ? Math.round(
+          correctCount /
+          questions.length *
+          100
+        )
+
+      : 0;
+
+
+  document
+    .getElementById(
+      "resultCorrect"
+    )
+    .textContent =
+      correctCount;
+
+
+  document
+    .getElementById(
+      "resultWrong"
+    )
+    .textContent =
+      wrongCount;
+
+
+  document
+    .getElementById(
+      "resultRate"
+    )
+    .textContent =
+      rate + "%";
+
+
+  result.style.display =
+    "block";
+
+}
+
+
+/* =====================================================
+   開始遊戲
+===================================================== */
+
+function startGame(){
+
+  questions =
+    createQuestions();
+
+
+  currentIndex = 0;
+
+  correctCount = 0;
+
+  wrongCount = 0;
+
+  completedCount = 0;
+
+
+  updateStats();
+
+
+  result.style.display =
+    "none";
+
+
+  startArea.style.display =
+    "none";
+
+
+  updateModeUI();
+
+  updateQuestion();
+
+}
+
+
+/* =====================================================
+   開始按鈕
+===================================================== */
+
+document
+  .getElementById(
+    "startButton"
+  )
+  .addEventListener(
+    "click",
+    startGame
+  );
+
+
+/* =====================================================
+   重新開始
+===================================================== */
+
+document
+  .getElementById(
+    "restartButton"
+  )
+  .addEventListener(
+    "click",
+    startGame
+  );
+
+
+/* =====================================================
+   ★ 設定切換
+===================================================== */
+
+function changeSettings(){
+
+  /*
+    尚未開始：
+    只更新 UI。
+  */
+
+  if(
+    questions.length === 0
+  ){
+
+    updateModeUI();
+
+    return;
+
+  }
+
+
+  /*
+    如果已完成：
+    不重建題目。
+    等使用者按「再練一次」。
+  */
+
+  if(
+    result.style.display ===
+    "block"
+  ){
+
+    updateModeUI();
+
+    return;
+
+  }
+
+
+  /*
+    練習途中切換：
+    直接重新建立一輪。
+
+    這可以避免：
+    舊題目 + 新模式
+    混在一起。
+  */
+
+  questions =
+    createQuestions();
+
+
+  currentIndex = 0;
+
+  correctCount = 0;
+
+  wrongCount = 0;
+
+  completedCount = 0;
+
+
+  updateStats();
+
+  updateModeUI();
+
+  updateQuestion();
+
+}
+
+
+/* =====================================================
+   模式切換
+===================================================== */
+
+modeSelect.addEventListener(
+  "change",
+  changeSettings
+);
+
+
+/* =====================================================
+   假名切換
+===================================================== */
+
+scriptSelect.addEventListener(
+  "change",
+  changeSettings
+);
+
+
+/* =====================================================
+   題數切換
+===================================================== */
+
+countSelect.addEventListener(
+  "change",
+  changeSettings
+);
+
+
+/* =====================================================
+   Canvas 清除
+===================================================== */
+
+function clearCanvas(){
+
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+
+  /*
+    十字輔助線
+  */
+
+  ctx.save();
+
+  ctx.strokeStyle =
+    "#eeeeee";
+
+  ctx.lineWidth = 2;
+
+
+  ctx.beginPath();
+
+
+  ctx.moveTo(
+    250,
+    25
+  );
+
+  ctx.lineTo(
+    250,
+    475
+  );
+
+
+  ctx.moveTo(
+    25,
+    250
+  );
+
+  ctx.lineTo(
+    475,
+    250
+  );
+
+
+  ctx.stroke();
+
+  ctx.restore();
+
+}
+
+
+/* =====================================================
+   Canvas 座標
+===================================================== */
+
+function getPosition(event){
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  return {
+
+    x:
+      (
+        event.clientX -
+        rect.left
+      )
+      *
+      canvas.width /
+      rect.width,
+
+
+    y:
+      (
+        event.clientY -
+        rect.top
+      )
+      *
+      canvas.height /
+      rect.height
+
+  };
+
+}
+
+
+/* =====================================================
+   Canvas 開始
+===================================================== */
+
+canvas.addEventListener(
+  "pointerdown",
+  event => {
+
+    drawing = true;
+
+
+    const p =
+      getPosition(event);
+
+
+    ctx.beginPath();
+
+
+    ctx.moveTo(
+      p.x,
+      p.y
+    );
+
+  }
+);
+
+
+/* =====================================================
+   Canvas 畫線
+===================================================== */
+
+canvas.addEventListener(
+  "pointermove",
+  event => {
+
+    if(!drawing){
+
+      return;
+
+    }
+
+
+    const p =
+      getPosition(event);
+
+
+    ctx.lineWidth =
+      16;
+
+    ctx.lineCap =
+      "round";
+
+    ctx.lineJoin =
+      "round";
+
+    ctx.strokeStyle =
+      "#222";
+
+
+    ctx.lineTo(
+      p.x,
+      p.y
+    );
+
+
+    ctx.stroke();
+
+  }
+);
+
+
+/* =====================================================
+   Canvas 停止
+===================================================== */
+
+function stopDrawing(){
+
+  drawing = false;
+
+  ctx.closePath();
+
+}
+
+
+canvas.addEventListener(
+  "pointerup",
+  stopDrawing
+);
+
+canvas.addEventListener(
+  "pointercancel",
+  stopDrawing
+);
+
+canvas.addEventListener(
+  "pointerleave",
+  stopDrawing
+);
+
+
+/* =====================================================
+   清除按鈕
+===================================================== */
+
+document
+  .getElementById(
+    "clearButton"
+  )
+  .addEventListener(
+    "click",
+    clearCanvas
+  );
+
+
+/* =====================================================
+   初始化
+===================================================== */
+
+clearCanvas();
+
+updateModeUI();
+
+</script>
+
+</body>
+</html>
